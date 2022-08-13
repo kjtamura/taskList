@@ -1,16 +1,30 @@
-package tasklist
+enum class ACTION(val action: String) {
+    ADD("add"),
+    PRINT("print"),
+    END("end")
+}
 
 object TaskManager {
     private val taskList = mutableListOf<String>()
 
     fun addTask() {
         println("Input the tasks (enter a blank line to end):")
+        var str = ""
         while (true) {
             val task = readln().trim()
             if (task.isEmpty()) {
                 break
             }
-            taskList.add(task)
+            if(str.isEmpty()) {
+                str += task + "\n"
+            }  else {
+                str += "   $task\n"
+            }
+        }
+        if (str.isNotEmpty()) {
+            taskList.add(str)
+        } else {
+            println("The task is blank")
         }
     }
 
@@ -24,9 +38,26 @@ object TaskManager {
             }
         }
     }
+
+    fun exit() = println("Tasklist exiting!")
 }
 
-fun main() {
-    TaskManager.addTask()
-    TaskManager.printTasks()
+fun invalidInput() = println("The input action is invalid")
+
+fun main(args: Array<String>) {
+
+    while (true) {
+        println("Input an action (add, print, end):")
+        when (readln()) {
+            ACTION.ADD.action ->  TaskManager.addTask()
+            ACTION.PRINT.action -> TaskManager.printTasks()
+            ACTION.END.action -> {
+                TaskManager.exit()
+                break
+            }
+            else -> invalidInput()
+        }
+    }
 }
+
+
